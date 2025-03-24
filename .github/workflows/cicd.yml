@@ -1,0 +1,46 @@
+name: FastAPI CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow only on the main branch
+  pull_request:
+    branches:
+      - main  # Trigger on PR to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu environment
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'  # You can change this to your required Python version
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Run tests (optional)
+      - name: Run tests
+        run: |
+          pytest  # If you have tests set up with pytest
+
+      # Step 5: Deploy to Neon Tech (or your server)
+      - name: Deploy FastAPI app
+        env:
+          DATABASE_URL: ${{ postgresql://neondb_owner:npg_9CZg6seJHuiY@ep-steep-wind-a4rzln6i-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require}}  # Use the GitHub secret for the DB URL
+        run: |
+          # Deploy commands (example, you can use any method to deploy)
+          echo "Deploying to Neon Tech"
+          # You can run Alembic migrations or deploy FastAPI here
+          alembic upgrade head  # Apply migrations if using Alembic
+          uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload  # Start FastAPI app
