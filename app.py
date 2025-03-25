@@ -9,7 +9,7 @@ class Person(BaseModel):
     age: int
     
     #fast api for neon db
-    
+    # psql "postgresql://neondb_owner:npg_9CZg6seJHuiY@ep-steep-wind-a4rzln6i-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require"
 
 people = []
 
