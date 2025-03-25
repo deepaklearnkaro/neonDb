@@ -1,43 +1,30 @@
 from logging.config import fileConfig
 from sqlalchemy import create_engine, pool
 from alembic import context
-from your_project.database import Base  # Import your SQLAlchemy Base
+from database import Base
 import os
 
-# Load Alembic config
 config = context.config
-
-# Set up logging
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Use SQLAlchemy models
-target_metadata = Base.metadata  # IMPORTANT: This allows Alembic to detect models!
-
-# Get database URL from alembic.ini or set it directly
+target_metadata = Base.metadata
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://neondb_owner:npg_9CZg6seJHuiY@ep-steep-wind-a4rzln6i-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require")
 
-def run_migrations_offline() -> None:
-    """Run migrations in 'offline' mode."""
+def run_migrations_offline():
     context.configure(
         url=DATABASE_URL,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
     )
-
     with context.begin_transaction():
         context.run_migrations()
 
-def run_migrations_online() -> None:
-    """Run migrations in 'online' mode."""
+def run_migrations_online():
     engine = create_engine(DATABASE_URL, poolclass=pool.NullPool)
-
     with engine.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
-
+        context.configure(connection=connection, target_metadata=target_metadata)
         with context.begin_transaction():
             context.run_migrations()
 
