@@ -3,7 +3,7 @@ name: Deploy FastAPI to Neon Tech
 on:
   push:
     branches:
-      - main  # This will trigger the deployment when changes are pushed to the main branch
+      - main  # This triggers deployment when pushing to the main branch
 
 jobs:
   deploy:
@@ -12,13 +12,13 @@ jobs:
     steps:
       # Step 1: Checkout code from the repository
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       # Step 2: Set up Python
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.9'  # Use the version of Python you want to use
+          python-version: '3.9'  # Change if using a different version
 
       # Step 3: Install dependencies
       - name: Install dependencies
@@ -26,14 +26,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 4: Run tests (optional)
-      - name: Run tests
-        run: |
-          pytest  # Or any testing command you use
+      # Step 4: Debugging - Check Installed Packages
+      - name: Verify Installed Packages
+        run: pip list
 
-      # Step 5: Deploy to Neon Tech (You may need to customize this step based on the deployment method)
+      # Step 5: Run tests (Fix `pytest` error)
+      - name: Run tests
+        run: python -m pytest  # Use `python -m pytest` to avoid command not found error
+
+      # Step 6: Deploy to Neon Tech (You may need to customize this step)
       - name: Deploy to Neon Tech
         run: |
-          # Example of deploying to Neon Tech using a simple command
-          # You can replace this with Neon Tech's CLI tool or API if available
-          neon-cli deploy --project-name your-project-name  # Customize based on Neon Tech's deployment CLI
+          neon-cli deploy --project-name your-project-name  # Customize this based on Neon Tech's deployment method
